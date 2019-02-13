@@ -8,6 +8,7 @@ package com.example;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.concurrent.TimeUnit;
+import org.apache.activemq.artemis.api.config.ActiveMQDefaultConfiguration;
 import org.apache.activemq.artemis.api.core.RoutingType;
 import org.apache.activemq.artemis.api.core.SimpleString;
 import org.apache.activemq.artemis.core.config.impl.ConfigurationImpl;
@@ -33,9 +34,15 @@ public class Application {
 
     public void start() throws Exception {
         server = ActiveMQServers.newActiveMQServer(new ConfigurationImpl()
-                .setPersistenceEnabled(false)
+                .setPersistenceEnabled(true)
+                .setBindingsDirectory("target/server01/" + ActiveMQDefaultConfiguration.getDefaultBindingsDirectory())
+                .setJournalDirectory("target/server01/" + ActiveMQDefaultConfiguration.getDefaultJournalDir())
+                .setLargeMessagesDirectory("target/server01/" + ActiveMQDefaultConfiguration.getDefaultLargeMessagesDir())
+                .setPagingDirectory("target/server01/" + ActiveMQDefaultConfiguration.getDefaultPagingDir())
                 .setSecurityEnabled(false)
                 .addAcceptorConfiguration("invm", "vm://0"));
+        
+        server.start();
         
         server.waitForActivation(1000, TimeUnit.MILLISECONDS);
         
